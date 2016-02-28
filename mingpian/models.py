@@ -2,6 +2,7 @@
 
 from django.db.models import Model
 from django.db.models.fields import CharField, TextField, EmailField, DateTimeField, BooleanField
+from django.db.models import ForeignKey
 
 
 class Mingpian(Model):
@@ -15,3 +16,8 @@ class Mingpian(Model):
     remark = TextField(null=True)
     last_update = DateTimeField(auto_now=True)
     validity = BooleanField(default=False)
+
+class Philosopherstone(Model):
+    code = CharField(max_length=10)
+    create_date = DateTimeField(auto_now_add=True)
+    player = ForeignKey(Mingpian)
