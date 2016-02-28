@@ -45,7 +45,7 @@ class ReceiveView(View):
         if self.verify_identity(sender_openid):
             pass
         else:
-            return HttpResponse(u'您尚未填写名片或为同通过审核，如有问题请联系开发者。')
+            return HttpResponse(u'您尚未填写名片或未同通过审核，如有问题请联系开发者。')
 
     @staticmethod
     def extract_message(xml_content):
