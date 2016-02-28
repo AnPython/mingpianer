@@ -123,3 +123,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MY_TOKEN = 'angmessage'
+MY_HOST = 'http://test.com'
+MY_PROFILE_NAME = 'profile'
+

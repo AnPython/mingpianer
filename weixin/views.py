@@ -10,6 +10,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from mingpian.models import Mingpian
+from mingpian.utils import profile_temporary_url
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -46,7 +47,7 @@ class ReceiveView(View):
         function_switch, function_type, function_message = self.parse_message(message)
         if function_switch:
             if function_type == 'profile':
-                pass #TODO 创建或修改，返回url
+                return HttpResponse(profile_temporary_url(sender_openid))
             elif self.verify_identity(sender_openid):
                 pass #TODO 搜索
             else:
