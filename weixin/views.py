@@ -9,6 +9,8 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from mingpian.models import Mingpian
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ReceiveView(View):
@@ -40,11 +42,13 @@ class ReceiveView(View):
 
         xml_content = request.body
         sender_openid, message = self.extract_message(xml_content)
-        return HttpResponse('')
+        if self.verify_identity(sender_openid):
+            pass
+        else:
+            return HttpResponse(u'您尚未填写名片或为同通过审核，如有问题请联系开发者。')
 
     @staticmethod
     def extract_message(xml_content):
-
         sender_openid_re = re.compile(r'<FromUserName><!\[CDATA\[(.+?)\]\]></FromUserName>')
         sender_openid = sender_openid_re.findall(xml_content)[0]
 
@@ -52,3 +56,11 @@ class ReceiveView(View):
         message = message_re.findall(xml_content)[0]
 
         return sender_openid, message
+
+    @staticmethod
+    def verify_identity(openid):
+        _object = Mingpian.objects.filter(openid=openid, validity=True)
+        if _object.exists():
+            return True
+        else:
+            return False
