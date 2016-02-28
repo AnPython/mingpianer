@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from django.db.models import Model
-from django.db.models.fields import CharField, TextField, EmailField, DateTimeField
+from django.db.models.fields import CharField, TextField, EmailField, DateTimeField, BooleanField
 
 
 class Mingpian(Model):
@@ -14,3 +14,4 @@ class Mingpian(Model):
     address = TextField(null=True)
     remark = TextField(null=True)
     last_update = DateTimeField(auto_now=True)
+    validity = BooleanField(default=False)
