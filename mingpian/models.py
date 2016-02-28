@@ -18,6 +18,6 @@ class Mingpian(Model):
     validity = BooleanField(default=False)
 
 class Philosopherstone(Model):
-    code = CharField(max_length=10)
+    code = CharField(max_length=10, unique=True)
     create_date = DateTimeField(auto_now_add=True)
     player = ForeignKey(Mingpian)
