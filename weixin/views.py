@@ -42,20 +42,35 @@ class ReceiveView(View):
 
         xml_content = request.body
         sender_openid, message = self.extract_message(xml_content)
-        if self.verify_identity(sender_openid):
-            pass
+
+        function_switch, function_type, function_message = self.parse_message(message)
+        if function_switch:
+            if function_type == 'profile':
+                pass #TODO 创建或修改，返回url
+            elif self.verify_identity(sender_openid):
+                pass #TODO 搜索
+            else:
+                return HttpResponse(u'您尚未填写名片或未同通过审核，如有问题请联系开发者。')
         else:
-            return HttpResponse(u'您尚未填写名片或未同通过审核，如有问题请联系开发者。')
+            return HttpResponse('')
 
     @staticmethod
     def extract_message(xml_content):
         sender_openid_re = re.compile(r'<FromUserName><!\[CDATA\[(.+?)\]\]></FromUserName>')
         sender_openid = sender_openid_re.findall(xml_content)[0]
-
         message_re = re.compile(r'<Content><!\[CDATA\[(.+?)\]\]></Content>')
         message = message_re.findall(xml_content)[0]
 
-        return sender_openid, message
+        return sender_openid, message.strip()
+
+    @staticmethod
+    def parse_message(message):
+        if message.lower() == 'p':
+            return True, 'profile', None
+        elif message.startwith('s'):
+            return True, 'search', message[1:].strip()
+        else:
+            return False, None, None
 
     @staticmethod
     def verify_identity(openid):
