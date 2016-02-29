@@ -126,3 +126,12 @@ MY_TOKEN = 'angmessage'
 MY_HOST = 'http://test.com'
 MY_PROFILE_NAME = 'profile'
 
+MY_WEIXIN_TEXT_REPLY_TEMPLATE = u'''<xml>
+<ToUserName><![CDATA[{to_user}]]></ToUserName>
+<FromUserName><![CDATA[{from_user}]]></FromUserName>
+<CreateTime>{data_time}</CreateTime>
+<MsgType><![CDATA[text]]></MsgType>
+<Content><![CDATA[{message}]]></Content>
+</xml>
+'''
+
