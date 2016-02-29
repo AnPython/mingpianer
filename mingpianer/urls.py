@@ -17,10 +17,11 @@ from django.conf.urls import url, include
 # from django.contrib import admin
 
 from mingpian.urls import urlpatterns as mingpian_urlpatterns
+from weixin.urls import urlpatterns as weixin_urlpatterns
 
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
-    url(r'^weixin/', include('weixin.urls')),
 ]
 
 urlpatterns += mingpian_urlpatterns
+urlpatterns += weixin_urlpatterns
