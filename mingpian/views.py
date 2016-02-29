@@ -1,13 +1,13 @@
 # coding: utf-8
 
 from django.utils import timezone
-from django.views.generic import View
+from django.views.generic import TemplateView
 from django.http import HttpResponse
 
 from .models import Mingpian, Philosopherstone
 
 
-class ProfileView(View):
+class ProfileView(TemplateView):
     def get(self, request, code):
         # check code validity
         try:
@@ -22,6 +22,8 @@ class ProfileView(View):
                 return HttpResponse('ok')
                 # pass # 返回表单
         except Philosopherstone.DoesNotExist:
-            # pass
             # 无效
             return HttpResponse('invalid code')
+
+    def post(self, request, code):
+        pass
