@@ -21,7 +21,7 @@ class Mingpian(Model):
 
 class Philosopherstone(Model):
     code = CharField(max_length=10, unique=True)
-    create_date = DateTimeField(auto_now_add=True)
+    create_datetime = DateTimeField(auto_now_add=True)
     player = ForeignKey(Mingpian)
 
     def save(self, **kwargs):
