@@ -108,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'zh-CN'
 
-TIME_ZONE = 'Asia/Shanghai'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -123,7 +123,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MY_TOKEN = 'angmessage'
-MY_HOST = 'http://test.com'
+MY_HOST = 'http://mingpianer.tunnel.phpor.me'
 MY_PROFILE_NAME = 'profile'
 
 MY_WEIXIN_TEXT_REPLY_TEMPLATE = u'''<xml>
