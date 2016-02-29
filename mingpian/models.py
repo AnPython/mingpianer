@@ -5,9 +5,10 @@ from django.db.models.fields import CharField, TextField, EmailField, DateTimeFi
 from django.db.models import ForeignKey
 import random
 
+
 class Mingpian(Model):
     openid = CharField(max_length=128, null=True, unique=True)
-    name = CharField(max_length=64, db_index=True)
+    name = CharField(max_length=64, null=True, db_index=True)
     weixin = CharField(max_length=128, null=True)
     email = EmailField(null=True)
     phone_number = CharField(max_length=64, null=True)
