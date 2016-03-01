@@ -52,7 +52,24 @@ class ReceiveView(View):
                 reply_content = self.generate_reply_content(my_id, sender_openid, reply_message)
                 return HttpResponse(reply_content)
             elif self.verify_identity(sender_openid):
-                pass #TODO 搜索
+                search_result = Mingpian.objects.filter(name__exact=function_message)
+                if search_result.exists():
+                    mingpian_template = u"姓名：{name}\n微信号：{weixin}\n电话：{phone_num}\n" \
+                                        u"电话2：{phone_num_2}\n邮箱：{email}\n坐标：{address}\n备注：{remark}\n"
+                    mingpian = search_result.first()
+                    reply_message = mingpian_template.format(name=mingpian.name,
+                                                             weixin=mingpian.weixin,
+                                                             phone_num=mingpian.phone_number,
+                                                             phone_num_2=mingpian.phone_number_2,
+                                                             email=mingpian.email,
+                                                             address=mingpian.address,
+                                                             remark=mingpian.remark)
+                    reply_content = self.generate_reply_content(my_id, sender_openid, reply_message)
+                    return HttpResponse(reply_content)
+                else:
+                    reply_message = u'没有找到结果'
+                    reply_content = self.generate_reply_content(my_id, sender_openid, reply_message)
+                    return HttpResponse(reply_content)
             else:
                 reply_message = u'您尚未填写名片或未同通过审核，如有问题请联系开发者。'
                 reply_content = self.generate_reply_content(my_id, sender_openid, reply_message)

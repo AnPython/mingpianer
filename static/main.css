@@ -1,0 +1,66 @@
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+    background-color: #fff;
+    font-family: "Helvetica Neue", "Helvetica", "Lucida Grande", "Arial", "Hiragino Sans GB", "Microsoft Yahei", "WenQuanYi Micro Hei", "sans-serif";
+    font-size: 20px;
+}
+
+#container {
+    width: 300px;
+    margin: 0 auto;
+    text-align: center;
+    color: #363636;
+}
+
+hr {
+    border: 3px solid #f9d423;
+    width: 20%;
+}
+
+.item {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.label {
+    text-align: left;
+    font-weight: 600;
+}
+
+#my_form ul {
+    color: #f05053;
+    font-size: 0.8em;
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+#my_form input,
+#my_form textarea {
+    align-content: center;
+    border: 1px solid #ece473;
+    width: 100%;
+    border-radius: 4px;
+}
+
+#my_form textarea {
+    height: 100px;
+}
+
+#my_form button {
+    background: #f9d423;
+    width: 100px;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 9999px;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+    box-shadow: 0 3px 0 #daae1d;
+}

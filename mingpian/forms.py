@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from django.forms import forms, fields
+from django.forms import forms, fields, widgets
 
 
 class MingpianForm(forms.Form):
@@ -9,5 +9,5 @@ class MingpianForm(forms.Form):
     email = fields.EmailField(required=False, label='邮箱')
     phone_number = fields.CharField(max_length=64, required=False, label='电话')
     phone_number_2 = fields.CharField(max_length=64, required=False, label='电话2')
-    address = fields.Field(required=False, label='坐标')
-    remark = fields.Field(required=False, label='备注')
+    address = fields.Field(required=False, label='坐标', widget=widgets.TextInput)
+    remark = fields.Field(required=False, label='备注', widget=widgets.Textarea(attrs={'height': '100px'}))

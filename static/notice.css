@@ -1,0 +1,20 @@
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+    background-color: #f05053;
+    font-family: "Helvetica Neue", "Helvetica", "Lucida Grande", "Arial", "Hiragino Sans GB", "Microsoft Yahei", "WenQuanYi Micro Hei", "sans-serif";
+    font-size: 20px;
+}
+
+#container {
+    width: 300px;
+    margin: 0 auto;
+    text-align: center;
+    color: #fff;
+}

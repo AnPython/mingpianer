@@ -1,0 +1,42 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>profile</title>
+    <link rel="stylesheet" href="{% static 'normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+</head>
+<body>
+<div id="container">
+    <header>
+        {% if is_valid and form.name.html_name == 'name' %}
+            <h1>{{ form.name.value }}</h1>
+        {% else %}
+            <h1>录·入</h1>
+        {% endif %}
+    </header>
+    <form id="my_form" action="{% url 'profile' code %}" method="post">
+        {% csrf_token %}
+        <input name="openid" type="text" style="display:none;" value="{{ openid }}" />
+        {% for field in form %}
+            {% if is_valid and field.html_name == 'name' %}
+                <input type="text" name="{{ field.html_name }}" value="{{ field.value }}" readonly="readonly" style="display: none;">
+            {% else %}
+                <hr>
+                <div class="item">
+                    <p class="label">{{ field.label }}</p>
+                    {{ field.errors }}
+                    {{ field }}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="item">
+            <button type="submit">发射</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
