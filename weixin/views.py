@@ -83,8 +83,13 @@ class ReceiveView(View):
         my_id = my_id_re.findall(xml_content)[0]
         sender_openid_re = re.compile(r'<FromUserName><!\[CDATA\[(.+?)\]\]></FromUserName>')
         sender_openid = sender_openid_re.findall(xml_content)[0]
-        message_re = re.compile(r'<Content><!\[CDATA\[(.+?)\]\]></Content>')
-        message = message_re.findall(xml_content)[0]
+        message_type_re = re.compile(r'<MsgType><!\[CDATA\[(.+?)\]\]></MsgType>')
+        message_type = message_type_re.findall(xml_content)[0]
+        if message_type != 'text':
+            message = ''
+        else:
+            message_re = re.compile(r'<Content><!\[CDATA\[(.+?)\]\]></Content>')
+            message = message_re.findall(xml_content)[0]
 
         return sender_openid, message.strip(), my_id
 
