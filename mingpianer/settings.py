@@ -124,10 +124,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 
-MY_TOKEN = 'angmessage'
-MY_HOST = 'http://mingpianer.tunnel.phpor.me'
-MY_PROFILE_NAME = 'profile'
-MY_SCEPTER = 'cokecode'
+with open(os.path.join(BASE_DIR, 'secret.json')) as f:
+    secret_data = json.load(f)
+
+MY_TOKEN = secret_data['MY_TOKEN']
+MY_HOST = secret_data['MY_HOST']
+MY_PROFILE_NAME = secret_data['MY_PROFILE_NAME']
+MY_SCEPTER = secret_data['MY_SCEPTER']
 MY_WEIXIN_TEXT_REPLY_TEMPLATE = u'''<xml>
 <ToUserName><![CDATA[{to_user}]]></ToUserName>
 <FromUserName><![CDATA[{from_user}]]></FromUserName>
@@ -138,8 +141,7 @@ MY_WEIXIN_TEXT_REPLY_TEMPLATE = u'''<xml>
 '''
 
 # email
-with open(os.path.join(BASE_DIR, 'secret.json')) as f:
-    secret_data = json.load(f)
+
 EMAIL_HOST = secret_data['EMAIL_HOST']
 EMAIL_PORT = secret_data['EMAIL_PORT']
 EMAIL_HOST_USER = secret_data['EMAIL_HOST_USER']
