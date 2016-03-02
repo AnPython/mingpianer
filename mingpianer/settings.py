@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -136,3 +137,11 @@ MY_WEIXIN_TEXT_REPLY_TEMPLATE = u'''<xml>
 </xml>
 '''
 
+# email
+with open(os.path.join(BASE_DIR, 'secret.json')) as f:
+    secret_data = json.load(f)
+EMAIL_HOST = secret_data['EMAIL_HOST']
+EMAIL_PORT = secret_data['EMAIL_PORT']
+EMAIL_HOST_USER = secret_data['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = secret_data['EMAIL_HOST_PASSWORD']
+EMAIL_USE_SSL = secret_data['EMAIL_USE_SSL']

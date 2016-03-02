@@ -5,7 +5,7 @@ from django.conf import settings
 from django.shortcuts import HttpResponse
 from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
-
+from django.core.mail import send_mail
 
 from .models import Mingpian, Philosopherstone
 from .forms import MingpianForm
@@ -116,6 +116,8 @@ def transfer_valid(request):
             mingpian = Mingpian.objects.get(pk=mingpian_id)
             mingpian.validity = True
             mingpian.save()
+            if mingpian.email:
+                send_mail(u'名片儿-通知', u'您已通过名片儿审核', 'zhanga005@nenu.edu.cn', [mingpian.email, ])
             return HttpResponse('ok')
         else:
             return HttpResponse('nu')
