@@ -126,7 +126,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 MY_TOKEN = 'angmessage'
 MY_HOST = 'http://mingpianer.tunnel.phpor.me'
 MY_PROFILE_NAME = 'profile'
-
+MY_SCEPTER = 'cokecode'
 MY_WEIXIN_TEXT_REPLY_TEMPLATE = u'''<xml>
 <ToUserName><![CDATA[{to_user}]]></ToUserName>
 <FromUserName><![CDATA[{from_user}]]></FromUserName>

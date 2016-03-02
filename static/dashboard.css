@@ -1,0 +1,48 @@
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+    background-color: #fff;
+    font-family: "Helvetica Neue", "Helvetica", "Lucida Grande", "Arial", "Hiragino Sans GB", "Microsoft Yahei", "WenQuanYi Micro Hei", "sans-serif";
+    font-size: 20px;
+}
+
+header {
+    text-align: center;
+}
+
+#container {
+    margin: 0 auto;
+    width: 300px;
+}
+
+.item {
+    text-align: right;
+    color: #fff;
+    box-shadow: 3px 3px 0 #c04042;
+    overflow: visible;
+    background: #f05053;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+    margin-bottom: 30px;
+    width:300px;
+}
+
+.item p {
+    text-align: left;
+}
+
+button {
+    box-shadow: 2px 2px 0 #cf7a31;
+    font-size: 0.8em;
+    padding: 10px;
+    background: #f6903d;
+    border-radius: 5px;
+    border: none;
+}

@@ -1,0 +1,48 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>dashboard</title>
+    <link rel="stylesheet" href="{% static 'normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+    <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.js"></script>
+    <script>
+        var valid = function (event, obj, id, scepter){
+            var my_data = {
+                'id': id,
+                'scepter': scepter
+            };
+            var success = function(){
+                item_button = $(obj);
+                var item = item_button.parent();
+                item.hide();
+
+            };
+            $.post({
+                type: "POST",
+                url: "/valid",
+                data: my_data,
+                success: success()
+            }
+            );
+
+        }
+    </script>
+</head>
+<body>
+<div id="container">
+    <header>
+        <h1>审·核</h1>
+    </header>
+    {% for mingpian in invaild_mingpian_list %}
+        <div class="item">
+            <p>{{ mingpian.summary|linebreaks }}</p>
+            <button onclick="valid(event, this, id='{{ mingpian.pk }}', scepter='{{ scepter }}')">通过</button>
+        </div>
+    {% endfor %}
+</div>
+</body>
+</html>

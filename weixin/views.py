@@ -54,16 +54,8 @@ class ReceiveView(View):
             elif self.verify_identity(sender_openid):
                 search_result = Mingpian.objects.filter(name__exact=function_message)
                 if search_result.exists():
-                    mingpian_template = u"姓名：{name}\n微信号：{weixin}\n电话：{phone_num}\n" \
-                                        u"电话2：{phone_num_2}\n邮箱：{email}\n坐标：{address}\n备注：{remark}\n"
                     mingpian = search_result.first()
-                    reply_message = mingpian_template.format(name=mingpian.name,
-                                                             weixin=mingpian.weixin,
-                                                             phone_num=mingpian.phone_number,
-                                                             phone_num_2=mingpian.phone_number_2,
-                                                             email=mingpian.email,
-                                                             address=mingpian.address,
-                                                             remark=mingpian.remark)
+                    reply_message = mingpian.summary
                     reply_content = self.generate_reply_content(my_id, sender_openid, reply_message)
                     return HttpResponse(reply_content)
                 else:

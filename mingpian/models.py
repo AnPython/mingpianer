@@ -18,6 +18,18 @@ class Mingpian(Model):
     last_update = DateTimeField(auto_now=True)
     validity = BooleanField(default=False)
 
+    @property
+    def summary(self):
+        mingpian_template = u"姓名：{name}\n微信号：{weixin}\n电话：{phone_num}\n" \
+                            u"电话2：{phone_num_2}\n邮箱：{email}\n坐标：{address}\n备注：{remark}\n"
+        return mingpian_template.format(name=self.name,
+                                        weixin=self.weixin,
+                                        phone_num=self.phone_number,
+                                        phone_num_2=self.phone_number_2,
+                                        email=self.email,
+                                        address=self.address,
+                                        remark=self.remark)
+
 
 class Philosopherstone(Model):
     code = CharField(max_length=10, unique=True)
@@ -30,8 +42,8 @@ class Philosopherstone(Model):
         raw_words = 'abcdefghijklmnopqrstuvwxyz0123456789'
         _code = ''
         for i in range(code_len):
-            random_num = random.randint(0, len(raw_words)-1)
+            random_num = random.randint(0, len(raw_words) - 1)
             _code += raw_words[random_num]
         self.code = _code
-        
+
         super(Philosopherstone, self).save(**kwargs)

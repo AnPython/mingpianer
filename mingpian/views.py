@@ -1,7 +1,11 @@
 # coding: utf-8
 
 from django.utils import timezone
+from django.conf import settings
+from django.shortcuts import HttpResponse
 from django.views.generic import TemplateView
+from django.views.decorators.csrf import csrf_exempt
+
 
 from .models import Mingpian, Philosopherstone
 from .forms import MingpianForm
@@ -79,3 +83,41 @@ class ProfileView(TemplateView):
             'notice': notice,
         }
         return context
+
+
+class DashboardView(TemplateView):
+    template_name = 'scepter.html'
+
+    def post(self, request):
+        scepter = request.POST['scepter']
+        if scepter == settings.MY_SCEPTER:
+            self.template_name = 'dashboard.html'
+            invaild_mingpian_list = Mingpian.objects.filter(validity=0)
+            context = {
+                'invaild_mingpian_list': invaild_mingpian_list,
+                'scepter': scepter,
+            }
+            return self.render_to_response(context)
+
+        else:
+            self.template_name = 'notice.html'
+            context = {
+                'notice': u'地狱权杖',
+            }
+            return self.render_to_response(context)
+
+
+@csrf_exempt
+def transfer_valid(request):
+    if request.method == 'POST':
+        scepter = request.POST['scepter']
+        if scepter == settings.MY_SCEPTER:
+            mingpian_id = request.POST['id']
+            mingpian = Mingpian.objects.get(pk=mingpian_id)
+            mingpian.validity = True
+            mingpian.save()
+            return HttpResponse('ok')
+        else:
+            return HttpResponse('nu')
+    else:
+        return HttpResponse('nu2')
