@@ -2,10 +2,6 @@
 
 from django.db.models import Model
 from django.db.models.fields import CharField, TextField, EmailField, DateTimeField, BooleanField
-from django.db.models import ForeignKey
-import random
-
-from .utils import generate_code
 
 
 class Mingpian(Model):
@@ -31,20 +27,3 @@ class Mingpian(Model):
                                         email=self.email,
                                         address=self.address,
                                         remark=self.remark)
-
-
-class Philosopherstone(Model):
-    code = CharField(max_length=10, unique=True)
-    create_datetime = DateTimeField(auto_now_add=True)
-    player = ForeignKey(Mingpian)
-
-    def save(self, **kwargs):
-        # generate code
-        while True:
-            _code = generate_code()
-            check = Philosopherstone.objects.filter(code=_code)
-            if not check.exists():
-                break
-        self.code = _code
-
-        super(Philosopherstone, self).save(**kwargs)

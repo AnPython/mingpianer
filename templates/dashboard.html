@@ -11,24 +11,30 @@
     <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.js"></script>
     <script>
         var valid = function (event, obj, id, scepter){
-            var my_data = {
-                'id': id,
-                'scepter': scepter
-            };
-            var success = function(){
-                item_button = $(obj);
-                var item = item_button.parent();
-                item.hide();
-
-            };
-            $.post({
-                type: "POST",
-                url: "/valid",
-                data: my_data,
-                success: success()
+            var item_button = $(obj);
+            var item = item_button.parent();
+            var is_confirm = confirm(item.children("p").text());
+            if(is_confirm){
+                var my_data = {
+                    'id': id,
+                    'scepter': scepter
+                };
+                var success = function(data){
+                    if(data == "ok"){
+                        item.fadeOut();
+                    }
+                    else{
+                        alert(data);
+                    }
+                };
+                $.post({
+                    type: "POST",
+                    url: "/valid",
+                    data: my_data,
+                    success: success
+                }
+                );
             }
-            );
-
         }
     </script>
 </head>

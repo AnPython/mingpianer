@@ -1,22 +1,22 @@
 # encoding: utf-8
 
-import re
-from time import time
 from hashlib import sha1
+from time import time
 
-from django.views.generic import View
-from django.utils.decorators import method_decorator
+import re
 from django.conf import settings
 from django.http import HttpResponse
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import View
+from django.core.urlresolvers import reverse
 
 from mingpian.models import Mingpian
-from mingpian.utils import profile_temporary_url
+from mingpianer.utils import generate_code, redis
 
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ReceiveView(View):
-
     def get(self, request):
         '''
         验证服务器地址有效性
@@ -41,25 +41,26 @@ class ReceiveView(View):
             return HttpResponse('something wrong')
 
     def post(self, request):
-
         xml_content = request.body
         sender_openid, message, my_id = self.extract_message(xml_content)
 
         function_switch, function_type, function_message = self.parse_message(message)
         if function_switch:
             if function_type == 'profile':
-                reply_message = profile_temporary_url(sender_openid)
-                reply_content = self.generate_reply_content(my_id, sender_openid, reply_message)
+                Mingpian.objects.get_or_create(openid=sender_openid)
+                while True:
+                    _code = generate_code()
+                    _key = 'profile:%s' % _code
+                    if not redis.exists(_key):
+                        redis.set(_key, sender_openid)
+                        redis.expire(_key, 24*60*60)
+                        break
+                url = reverse('profile', kwargs={'code': _code})
+                complete_url = '{}://{}{}'.format(request.scheme, request.get_host(), url)
+                reply_content = self.generate_reply_content(my_id, sender_openid, complete_url)
                 return HttpResponse(reply_content)
             elif self.verify_identity(sender_openid):
-                search_result = Mingpian.objects.filter(name__exact=function_message)
-                if search_result.exists():
-                    mingpian = search_result.first()
-                    reply_message = mingpian.summary
-                    reply_content = self.generate_reply_content(my_id, sender_openid, reply_message)
-                    return HttpResponse(reply_content)
-                else:
-                    reply_message = u'没有找到结果'
+                    reply_message = self.search(request, function_message)
                     reply_content = self.generate_reply_content(my_id, sender_openid, reply_message)
                     return HttpResponse(reply_content)
             else:
@@ -108,3 +109,26 @@ class ReceiveView(View):
         reply_template = settings.MY_WEIXIN_TEXT_REPLY_TEMPLATE
         result = reply_template.format(to_user=user_id, from_user=my_id, data_time=current_time, message=message)
         return result
+
+    @staticmethod
+    def search(request, keyword):
+        search_result = Mingpian.objects.filter(name__contains=keyword, validity=True)
+        if search_result.exists():
+            if len(search_result) == 1:
+                _object = search_result.first()
+                return _object.summary
+            else:
+                while True:
+                    _code = generate_code()
+                    _key = 'search:%s' % _code
+                    if not redis.exists(_key):
+                        redis.set(_key, keyword)
+                        redis.expire(_key, 24*60*60)
+                        break
+                url = reverse('search', kwargs={'code': _code})
+                complete_url = '{}://{}{}'.format(request.scheme, request.get_host(), url)
+                return complete_url
+        else:
+            return u'没有找到结果'
+
+

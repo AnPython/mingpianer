@@ -1,30 +1,35 @@
 # coding: utf-8
 
-from django.utils import timezone
 from django.conf import settings
 from django.shortcuts import HttpResponse
 from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 
-from .models import Mingpian, Philosopherstone
+from .models import Mingpian
 from .forms import MingpianForm
+from mingpianer.utils import redis
 
 
-class ProfileView(TemplateView):
+class SharedTemplateView(TemplateView):
+    def show_notice(self, notice):
+        self.template_name = 'notice.html'
+        context = {
+            'notice': notice,
+        }
+        return context
+
+
+class ProfileView(SharedTemplateView):
     def get(self, request, code):
         # check code validity
         try:
-            stone = Philosopherstone.objects.get(code=code)
-            create_datetime = stone.create_datetime
-            current_datetime = timezone.now()
-            timedelta_seconds = (current_datetime-create_datetime).seconds
-            if timedelta_seconds > 600:
-                stone.delete()
-                context = self.show_notice(u'链接已过期，请重新申请')
+            openid = redis.get('profile:%s' % code)
+            if not openid:
+                context = self.show_notice(u'链接无效，请重新申请')
                 return self.render_to_response(context)
             else:
-                mingpian = stone.player
+                mingpian = Mingpian.objects.get(openid=openid)
                 form_data = {
                     'name': mingpian.name,
                     'email': mingpian.email,
@@ -43,14 +48,18 @@ class ProfileView(TemplateView):
                 }
                 self.template_name = 'profile.html'
                 return self.render_to_response(context)
-        except Philosopherstone.DoesNotExist:
-            context = self.show_notice(u'无效链接，请重新申请')
+        except Mingpian.DoesNotExist:
+            context = self.show_notice(u'链接无效，请重新申请')
             return self.render_to_response(context)
 
     def post(self, request, code):
         openid = request.POST['openid']
         try:
-            stone = Philosopherstone.objects.get(player__openid=openid, code=code)
+            _openid = redis.get('profile:%s' % code)
+            if _openid != openid or (not _openid):
+                context = self.show_notice(u'无效请求，请重新试一下‍')
+                return self.render_to_response(context)
+
             mingpian = Mingpian.objects.get(openid=openid)
             form = MingpianForm(request.POST)
             if form.is_valid():
@@ -61,7 +70,6 @@ class ProfileView(TemplateView):
                 for k, v in new_data.items():
                     mingpian.__setattr__(k, v)
                 mingpian.save()
-                stone.delete()
                 context = self.show_notice(u'发射成功')
                 return self.render_to_response(context)
             else:
@@ -73,19 +81,28 @@ class ProfileView(TemplateView):
                 }
                 self.template_name = 'profile.html'
                 return self.render_to_response(context)
-        except (Philosopherstone.DoesNotExist, Mingpian.DoesNotExist):
+        except Mingpian.DoesNotExist:
             context = self.show_notice(u'非法操作‍')
             return self.render_to_response(context)
 
-    def show_notice(self, notice):
-        self.template_name = 'notice.html'
-        context = {
-            'notice': notice,
-        }
-        return context
+
+class MultiSearchView(SharedTemplateView):
+    def get(self, request, code):
+        keyword = redis.get('search:%s' % code)
+        if keyword == '' or keyword:
+            search_result = Mingpian.objects.filter(name__contains=keyword, validity=True).order_by('-name')
+            self.template_name = 'multisearch.html'
+            context = {
+                'keyword': keyword,
+                'search_result': search_result,
+            }
+            return self.render_to_response(context)
+        else:
+            context = self.show_notice(u'链接无效,请重新申请')
+            return self.render_to_response(context)
 
 
-class DashboardView(TemplateView):
+class DashboardView(SharedTemplateView):
     template_name = 'scepter.html'
 
     def post(self, request):
@@ -98,12 +115,8 @@ class DashboardView(TemplateView):
                 'scepter': scepter,
             }
             return self.render_to_response(context)
-
         else:
-            self.template_name = 'notice.html'
-            context = {
-                'notice': u'地狱权杖',
-            }
+            context = self.show_notice(u'劣质的权杖')
             return self.render_to_response(context)
 
 
@@ -114,11 +127,14 @@ def transfer_valid(request):
         if scepter == settings.MY_SCEPTER:
             mingpian_id = request.POST['id']
             mingpian = Mingpian.objects.get(pk=mingpian_id)
-            mingpian.validity = True
-            mingpian.save()
-            if mingpian.email:
-                send_mail(u'名片儿-通知', u'您已通过名片儿审核', 'zhanga005@nenu.edu.cn', [mingpian.email, ])
-            return HttpResponse('ok')
+            if mingpian.name:
+                mingpian.validity = True
+                mingpian.save()
+                if mingpian.email:
+                    send_mail(u'名片儿-通知', u'您已通过名片儿审核', 'zhanga005@nenu.edu.cn', [mingpian.email, ])
+                return HttpResponse('ok')
+            else:
+                return HttpResponse('Name None')
         else:
             return HttpResponse('nu')
     else:

@@ -128,8 +128,6 @@ with open(os.path.join(BASE_DIR, 'secret.json')) as f:
     secret_data = json.load(f)
 
 MY_TOKEN = secret_data['MY_TOKEN']
-MY_HOST = secret_data['MY_HOST']
-MY_PROFILE_NAME = secret_data['MY_PROFILE_NAME']
 MY_SCEPTER = secret_data['MY_SCEPTER']
 MY_WEIXIN_TEXT_REPLY_TEMPLATE = u'''<xml>
 <ToUserName><![CDATA[{to_user}]]></ToUserName>
@@ -147,3 +145,7 @@ EMAIL_PORT = secret_data['EMAIL_PORT']
 EMAIL_HOST_USER = secret_data['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = secret_data['EMAIL_HOST_PASSWORD']
 EMAIL_USE_SSL = secret_data['EMAIL_USE_SSL']
+
+REDIS_HOST = secret_data['REDIS_HOST']
+REDIS_PORT = secret_data['REDIS_PORT']
+REDIS_PASSWORD = secret_data['REDIS_PASSWORD']

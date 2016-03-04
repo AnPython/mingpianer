@@ -1,0 +1,25 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>dashboard</title>
+    <link rel="stylesheet" href="{% static 'normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+</head>
+<body>
+<div id="container">
+    <header>
+        <h1>{{ keyword }}</h1>
+        <h2>共 {{ search_result | length }} 条</h2>
+    </header>
+    {% for mingpian in search_result %}
+        <div class="item">
+            <p>{{ mingpian.summary|linebreaks }}</p>
+        </div>
+    {% endfor %}
+</div>
+</body>
+</html>
