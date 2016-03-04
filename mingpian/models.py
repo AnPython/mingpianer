@@ -5,6 +5,8 @@ from django.db.models.fields import CharField, TextField, EmailField, DateTimeFi
 from django.db.models import ForeignKey
 import random
 
+from .utils import generate_code
+
 
 class Mingpian(Model):
     openid = CharField(max_length=128, null=True, unique=True)
@@ -38,12 +40,11 @@ class Philosopherstone(Model):
 
     def save(self, **kwargs):
         # generate code
-        code_len = 10
-        raw_words = 'abcdefghijklmnopqrstuvwxyz0123456789'
-        _code = ''
-        for i in range(code_len):
-            random_num = random.randint(0, len(raw_words) - 1)
-            _code += raw_words[random_num]
+        while True:
+            _code = generate_code()
+            check = Philosopherstone.objects.filter(code=_code)
+            if not check.exists():
+                break
         self.code = _code
 
         super(Philosopherstone, self).save(**kwargs)
