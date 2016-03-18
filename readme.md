@@ -17,8 +17,8 @@ pip install -r requirements.txt
   "EMAIL_HOST_USER": "",
   "EMAIL_HOST_PASSWORD": "",
   "EMAIL_USE_SSL": true,
-  "MY_TOKEN": "", // 由微信公共平台提供
-  "MY_SCEPTER": "", // 后台管理的密码
+  "MY_TOKEN": "由微信公共平台提供",
+  "MY_SCEPTER": "后台管理密码",
   "REDIS_HOST": "",
   "REDIS_PORT": 5105,
   "REDIS_PASSWORD": ""
